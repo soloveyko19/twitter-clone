@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+
+# PyCharm
+.idea/
+
+# Enviroment
+.env
+venv/
+
+# Database data
+postgres-data/
+medias/
+
+# Linters and test cache
+.mypy_cache/
+.pytest_cache/

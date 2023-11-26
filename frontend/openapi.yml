@@ -1,0 +1,472 @@
+openapi: 3.1.0
+
+info:
+  title: Twitter
+  version: 1.0.0
+  description: RESTful API for twitter-clone
+
+paths:
+  /api/users/me:
+    get:
+      tags:
+        - Users
+      summary: Get information about the user who is authenticated
+      parameters:
+        - name: api-key
+          in: header
+          required: true
+          description: Unique api-key to authenticate the user
+          schema:
+            type: string
+          example: qwerty12345qwerty
+      responses:
+        "200":
+          description: Return information about the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+                  user:
+                    type: object
+                    description: User instance
+                    properties:
+                      id:
+                        type: integer
+                        description: Id of the user
+                      name:
+                        type: string
+                        description: Name of the user
+                      followers:
+                        type: array
+                        description: List of the followers
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the follower user
+                      following:
+                        type: array
+                        description: List of the following users
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the follower user
+              example:
+                result: true
+                user:
+                  - id: 1
+                    name: John Cameron
+                    followers:
+                      - id: 2
+                        name: Britney Spears
+                      - id: 3
+                        name: Tom Holland
+                    followings:
+                      - id: 3
+                        name: Tom Holland
+                      - id: 4
+                        name: Al Pacino
+
+  /api/users/{pk}:
+    get:
+      tags:
+        - Users
+      summary: Get information about requested user
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Id of the user to get info
+          example: 1
+      responses:
+        "200":
+          description: Return information about the requested
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+                  user:
+                    type: object
+                    description: User instance
+                    properties:
+                      id:
+                        type: integer
+                        description: Id of the user
+                      name:
+                        type: string
+                        description: Name of the user
+                      followers:
+                        type: array
+                        description: List of the followers
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the follower user
+                      following:
+                        type: array
+                        description: List of the following users
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the follower user
+              example:
+                result: true
+                user:
+                  id: 1
+                  name: John Cameron
+                  followers:
+                    - id: 2
+                      name: Britney Spears
+                    - id: 3
+                      name: Tom Holland
+                  followings:
+                    - id: 3
+                      name: Tom Holland
+                    - id: 4
+                      name: Al Pacino
+
+  /api/users/{pk}/follow:
+    post:
+      tags:
+        - Users
+      summary: Start follow the user
+      parameters:
+        - name: pk
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: Id of the user to follow
+          example: 1
+        - name: api-key
+          in: header
+          schema:
+            type: string
+          required: true
+          description: Unique api-key to authenticate the user
+          example: qwerty12345qwerty
+      responses:
+        "201":
+          description: Following created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+              example:
+                result: true
+
+    delete:
+      tags:
+        - Users
+      summary: Unfollow from the user
+      parameters:
+        - name: pk
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: Id of the user to unfollow
+          example: 3
+        - name: api-key
+          in: header
+          schema:
+            type: string
+          required: true
+          description: Unique api-key to authenticate the user
+          example: qwerty12345qwerty
+      responses:
+        "200":
+          description: Successfully unfollowed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+              example:
+                result: true
+
+  /api/tweets:
+    get:
+      tags:
+        - Tweets
+      summary: Get feed for the user who is authenticated
+      parameters:
+        - name: api-key
+          in: header
+          schema:
+            type: string
+          example: qwerty12345qwerty
+          required: true
+          description: Unique api-key to authenticate the user
+      responses:
+        "200":
+          description: Feed of the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+                  tweets:
+                    type: array
+                    description: Tweets of user's feed
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: ID of the tweet
+                        content:
+                          type: string
+                          description: Text of the tweet
+                        author:
+                          type: object
+                          description: author of the tweet
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the author
+                            name:
+                              type: string
+                              description: Name of the author
+                        attachments:
+                          type: array
+                          description: Links to media of the tweet (relative)
+                          items:
+                            type: string
+                        likes:
+                          type: array
+                          description: User who set like to the tweet
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: Id of the user
+                              name:
+                                type: string
+                                description: Name of th user
+              example:
+                result: true
+                tweets:
+                  - id: 1
+                    content: It's nice weather today!
+                    author:
+                      id: 1
+                      name: John Cameron
+                    attachments:
+                      - /medias/image_1.jpeg
+                      - /medias/image_2.png
+                    likes:
+                      - id: 1
+                        name: John Cameron
+                      - id: 2
+                        name: Britney Spears
+    post:
+      tags:
+        - Tweets
+      summary: Create the tweet
+      parameters:
+        - name: api-key
+          in: header
+          schema:
+            type: string
+          example: qwerty12345qwerty
+          required: true
+          description: Unique api-key to authenticate the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tweet_data:
+                  type: string
+                  description: Text of the tweet
+                tweet_media_ids:
+                  type: array
+                  description: List of ids of medias related to tweet
+                  items:
+                    type: integer
+            example:
+              tweet_data: It's nice weather today!
+              tweet_media_ids:
+                - 1
+                - 2
+      responses:
+        "201":
+          description: Tweet created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description:  Successful result
+                  tweet_id:
+                    type: integer
+                    description: Id of the created tweet
+              example:
+                result: true
+                tweet_id: 1
+
+  /api/tweets/{pk}:
+    delete:
+      tags:
+        - Tweets
+      summary: Delete tweet
+      parameters:
+        - name: api-key
+          in: header
+          schema:
+            type: string
+          example: qwerty12345qwerty
+          required: true
+          description: Unique api-key to authenticate the user
+        - name: pk
+          in: path
+          schema:
+            type: integer
+          example: 1
+          required: true
+          description: Id of the tweet
+      responses:
+        "200":
+          description: "Successfully deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+              example:
+                result: true
+  /api/tweets/{pk}/likes:
+    post:
+      tags:
+        - Tweets
+      summary: Set like to tweet
+      parameters:
+        - name: api-key
+          in: header
+          schema:
+          type: string
+          example: qwerty12345qwerty
+          required: true
+          description: Unique api-key to authenticate the user
+        - name: pk
+          in: path
+          schema:
+          type: integer
+          example: 1
+          required: true
+          description: Id of the tweet
+      responses:
+        "201":
+          description: Like was set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+              example:
+                result: true
+    delete:
+      tags:
+        - Tweets
+      summary: Remove like from tweet
+      parameters:
+        - name: api-key
+          in: header
+          schema:
+          type: string
+          example: qwerty12345qwerty
+          required: true
+          description: Unique api-key to authenticate the user
+        - name: pk
+          in: path
+          schema:
+          type: integer
+          example: 1
+          required: true
+          description: Id of the tweet
+      responses:
+        "200":
+          description: Like successfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+              example:
+                result: true
+  /api/medias:
+    post:
+      tags:
+        - Medias
+      summary: Send an media
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: Media added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Successful result
+                  media_id:
+                    type: integer
+                    description: Id of created media
+              example:
+                result: true
+                media_id: 1
+
+
